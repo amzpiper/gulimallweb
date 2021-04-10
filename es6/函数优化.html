@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+        function sum(a,b=1){
+            return a+b
+        }
+        
+        function  fun(...abc){
+            console.log(abc.length)
+        }
+        fun(1,2,3)
+        
+        let print = obj => console.log(obj)
+        print('hello')
+
+        let print2 = (a,b=1) => a+b
+        console.log(print2(2,3))
+
+        var sum3 = (a,b) => {
+            c = a+b
+            return c
+        }
+
+        const person = {
+            name:"jeck",
+            age:21,
+            language:["java","c","python"]
+        }
+        var hello = (person) => {
+            console.log("hello "+person.name)
+        } 
+        var hello2 = ({name}) => {
+            console.log("hello "+name)
+        }
+        hello2(person)
+        
+    </script>
+</body>
+</html>

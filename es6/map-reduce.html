@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+         let arr=[1,2,3,4]
+         sum = arr.map((item)=>{
+            return item*2
+         })
+         console.log(sum)
+
+         arr = arr.map(item=>item*2)
+
+         arr.reduce((previousValue,currentValue)=>{
+             console.log("previousValue:"+previousValue)
+             console.log("currentValue:"+currentValue)
+             sum = previousValue+currentValue
+             return sum
+        },100)
+        //100为上次处理值
+
+        
+    </script>
+</body>
+</html>

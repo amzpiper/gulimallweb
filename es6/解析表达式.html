@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+
+        // 数字结构
+        let arr = [1,2,3]
+        let a = arr[0]
+        let b = arr[0]
+        let c = arr[0]
+        console.log(a,b,c)
+
+        let [a,b,c] = arr
+        console.log(a,b,c)
+
+        //对象结构
+        const person = {
+            name:"jeck",
+            age:21,
+            language:["java","c","python"]
+        }
+        const name = person.name
+        const age = person.age
+        const language = person.language
+        const {name:abc,age,language} = person
+        console.log(abc,age,language)
+
+        // 字符串模板
+        let ss = `
+            <h1>
+                hello
+                ${name}!
+            </h1>
+        `
+
+        
+    </script>
+</body>
+</html>

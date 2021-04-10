@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+        const person = {
+            name:"jeck",
+            age:21,
+            language:["java","c","python"]
+        }
+        
+        console.log(Object.keys(person))
+        console.log(Object.values(person))
+        console.log(Object.entries(person))
+
+        const target = {a:2}
+        const p = {a:2}
+        const p2 = {b:2}
+        Object.assign(target,p,p2)
+        console.log(target)
+
+        const age =12
+        const name = "yuhang"
+        const person = {
+            age:age,
+            name:name
+        }
+        const person2 = {
+            age,
+            name
+        }
+
+        let person3 = {
+            name:"123",
+            eat:function(){
+                console.log(this.name+"eat:"+this.name)
+            },
+            eat2:food => {
+                //不能用this
+                console.log(person3.name+"eat:"+food)
+            },
+            eat3(food){
+                console.log(this.name+"eat:"+food)
+            }
+        }
+
+        //深拷贝
+        let someone = {...person}
+
+        //合并对象
+        let someone2 = {...person,...person2}
+        
+
+    </script>
+</body>
+</html>
