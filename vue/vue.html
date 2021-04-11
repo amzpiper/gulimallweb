@@ -123,8 +123,12 @@
             我被点击了{{count}}次
         </button>
         <counter></counter>
+        <button-counter></button-counter>
     </div>
 
+    <div id="app6">
+        
+    </div>
     <script>
         //全局注册一个组件
         Vue.component('counter',{
@@ -139,7 +143,20 @@
                 }
             }
         });
-        
+        //局部组件
+        var template = {
+            template:`
+            <button @click="count++">
+                我被点击了{{count}}次
+            </button>
+            `,
+            data(){
+                return{
+                    count:0
+                }
+            }
+        }
+
         //1、vue声明式渲染
         //2、双向绑定
         //3、事件绑定
@@ -265,9 +282,43 @@
             el:"#app5",
             data:{
                 count:0
+            },
+            //注册局部组件
+            components: {
+                'button-counter':template
             }
         })
 
+        //生命周期
+        let vm6 = new Vue({
+            el:"#app6",
+            data:{
+            },
+            beforeCreate () {
+                console.log("beforeCreate:数据模型、方法未加载")
+            },
+            created () {
+                console.log("created：数据模型、方法已经加载，html模板加载、未渲染")
+            },
+            beforeMount () {
+                console.log("beforeMount：数据模型、方法已经加载，html模板加载、未渲染")
+            },
+            mounted () {
+                console.log("mounted：数据模型、方法已经加载，html模板加载、已渲染")
+            },
+            beforeUpdate () {
+                console.log("beforeUpdate：数据模型已更新、html模板未渲染")
+            },
+            updated () {
+                console.log("updated：数据模型已更新、html模板已渲染")
+            },
+            beforeDestroy () {
+                console.log("beforeDestroy")
+            },
+            destroyed () {
+                console.log("destroyed")
+            }
+        })
     </script>
 </body>
 </html>

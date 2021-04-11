@@ -4,6 +4,8 @@ npm -v
 6.14.8
 node -v
 v14.13.0
+vue -V
+@vue/cli 4.5.9
 
 ## p29、ES6-let&const
 
@@ -25,6 +27,7 @@ v14.13.0
 
 ## p41、VUE-组件化
 
+## p44、VUE-整合Element
 
 
 
