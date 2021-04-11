@@ -8,15 +8,30 @@
 </head>
 <body>
     <div id="app">
+        <input type="text" v-model="num">
+        <button v-on:click="num++">点赞</button>
+        <button v-on:click="cancle">取消点赞</button>
         <h1>{{name}},非常帅</h1>
+        <p>有{{num}}个人为他点赞</p>
     </div>
     <script>
+        //1、vue声明式渲染
+        //2、双向绑定
+        //3、事件绑定
+
         let vm = new new Vue({
             el:"#app",
             data: {
-                name:"张三"
+                name:"张三",
+                num:0
+            },
+            methods: {
+                cancle(){
+                    this.num--
+                }
             },
         })
+        
     </script>
 </body>
 </html>
