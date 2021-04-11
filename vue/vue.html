@@ -14,12 +14,136 @@
         <h1>{{name}},非常帅</h1>
         <p>有{{num}}个人为他点赞</p>
     </div>
+
+    <div id="app2">
+        {{msg}}
+        <!-- 插值闪烁 -->
+        <br>
+        <!-- 无插值闪烁 -->
+        <span v-html="msg"></span>
+        <span v-text="msg"></span>
+
+        <!-- v-bind-给属性动态绑定 -->
+        <a :href="link">百度</a>
+        <br>
+
+        <!-- 单向绑定 -->
+        <!-- 动态class,style -->
+        <span v-bind:class="{
+            active:isActive,
+            'text-danger':hasError
+        }">class</span>
+        <span v-bind:style="{color:color1,fontSize:size}">
+            styl style -->
+        <span v-bind:class="{
+            active:isActive,
+            'text-danger':hasError
+        }">class<e
+        </span>
+        <br>
+
+        <!-- 多向绑定 -->
+        <div>
+            精通的语言
+            <input type="checkbox" v-model="language" value="java">java</div>
+            <input type="checkbox" v-model="language" value="c">c</input>
+            <input type="checkbox" v-model="language" value="python">python</input>
+            选中了:{{language.join(',')}}
+        </div>
+    </div>
+
+    <div id="app3">
+        <!-- v-on -->
+        <button v-on:click="number++">点赞</button>
+        <button v-on:click="number--">取消</button>
+        <p>有{{number}}个赞</p>
+        
+        <br>
+        <div style="border: 1px solid red;padding: 20px;" v-on:click.once="hello">
+            大div
+            <div style="border: 1px solid blue;padding: 20px;" @click.stop="hello2">
+                小div
+                <a href="www.baidu.com" @click.prevent.stop="hello2">去百度</a>
+            </div>
+        </div>
+
+        <input type="text" v-on:keyup.up="number++" v-on:keyup.down="number--" @click.ctrl="number=10">
+
+        <!-- v-for -->
+        <ul>
+            <li v-for="(item,index) in items" :key="index" v-if="item.age>=10">
+                {{index}}==>
+                {{item.name}}
+                :
+                {{item.age}}
+                <br>
+
+                <span v-for="(v,k,i) in item">
+                    {{k}}:{{v}}
+                </span>
+            </li>
+        </ul>
+
+        <!-- v-if,v-show -->
+        <input type="button" @click="ifshow = !ifshow" value="点我呀"/> 
+        <h1 v-if="ifshow">if看到我</h1>
+        <h1 v-else>else看到我</h1>
+        <h1 v-show="ifshow">show看到我</h1>
+    </div>
+
+    <div id="app4"> 
+        <ul>
+            <li>西游记：
+                <br>
+                价格：{{xyjPrice}}
+                数量: <input type="number" v-model="xyjNum">
+            </li>
+            <li>水浒传：
+                <br>
+                价格：{{shzPrice}}
+                数量: <input type="number" v-model="shzNum">
+            </li>
+            <li>总价：
+                {{totalPrice}}
+            </li>
+            <li>
+                {{msg}}
+            </li>
+        </ul>
+        <ul>
+            <!-- 过滤器 -->
+            <li v-for="user in userList">
+                {{user.id}}==>{{user.name}}==>{{user.gender == 1?"男":"女"}}==>{{user.gender | genderFilter}}==>{{user.gender | gFilter}}
+            </li>
+        </ul>
+    </div>
+
+    <div id="app5">
+        <button @click="count++">
+            我被点击了{{count}}次
+        </button>
+        <counter></counter>
+    </div>
+
     <script>
+        //全局注册一个组件
+        Vue.component('counter',{
+            template:`
+            <button @click="count++">
+                我被点击了{{count}}次
+            </button>
+            `,
+            data(){
+                return{
+                    count:0
+                }
+            }
+        });
+        
         //1、vue声明式渲染
         //2、双向绑定
         //3、事件绑定
-
-        let vm = new new Vue({
+        let vm = new Vue({
             el:"#app",
             data: {
                 name:"张三",
@@ -32,6 +156,118 @@
             },
         })
         
+        let vm2 = new Vue({
+            el:"#app2",
+            data:{
+                msg:"<h1>Hello</h1>",
+                link:"http://www.baidu.com",
+                isActive:true,
+                hasError:true,
+                color1:"red",
+                size:'30px',
+                language:[],
+                number:0,
+            },
+            methods:{
+                cancle(){
+                    number--
+                }
+            }
+        })
+
+        //事件修饰符
+        let vm3 = new Vue({
+            el:"#app3",
+            data:{
+                number:0,
+                items:[
+                    {
+                        name:"1",
+                        age:12
+                    },
+                    {
+                        name:"2",
+                        age:2
+                    },
+                    {
+                        name:"3",
+                        age:32
+                    },
+                ],
+                ifshow:true
+            },
+            methods:{
+                cancle(){
+                    number--
+                },
+                hello(){
+                    alert("大div点击了")
+                },
+                hello2(){
+                    alert("小div点击了")
+                }
+            }
+        })
+        
+        //全局过滤器
+        Vue.filter('gFilter', function (value) {
+            if(value==1){
+                return "男"
+            }
+            else{
+                return "女"
+            }
+        });
+        //计算属性&侦听器
+        let vm4 = new Vue({
+            el:"#app4",
+            data:{
+                xyjPrice:99.5,
+                shzPrice:80.5,
+                xyjNum:1,
+                shzNum:1,
+                msg:"",
+                userList:[
+                    { id:1,name:"guoyha",gender:1},
+                    { id:2,name:"guodn",gender:0}
+                ]
+            },
+            computed: {
+                totalPrice(){
+                    return this.xyjPrice*this.xyjNum+this.shzPrice*this.shzNum
+                }
+            },
+            watch: {
+                xyjNum(newVal,oldVal){
+                    console.log("西游记新个数："+newVal)
+                    console.log("西游记旧个数："+oldVal)
+                    if(newVal>=3){
+                        this.msg="库存超出限制"
+                        this.xyjNum = 3
+                    }
+                }
+            },
+            //局部过滤器
+            filters: {
+                genderFilter(value){
+                    if(value==1){
+                        return "男"
+                    }
+                    else{
+                        return "女"
+                    }
+                }
+            }
+        })
+
+        //组件化
+        let vm5 = new Vue({
+            el:"#app5",
+            data:{
+                count:0
+            }
+        })
+
     </script>
 </body>
 </html>
