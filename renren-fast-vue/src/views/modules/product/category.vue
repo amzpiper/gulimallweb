@@ -80,11 +80,11 @@ export default {
   computed: {},
   watch: {},
   methods: {
-    handleNodeClick(data) {
+    handleNodeClick (data) {
       console.log(data);
     },
     // 获取菜单列表
-    getMenus() {
+    getMenus () {
       this.dataListLoading = true;
       this.$http({
         url: this.$http.adornUrl("/product/category/list/tree"),
@@ -100,21 +100,21 @@ export default {
         // }
         // this.dataListLoading = false;
       });
-    },
+    }
   },
-  created() {
-    this.getMenus();
+  created () {
+    this.getMenus ()
   },
-  mounted() {},
-  beforeCreate() {},
-  beforeMount() {},
-  beforeUpdate() {},
-  updated() {},
-  beforeDestroy() {},
-  destroyed() {},
-  activated() {
+  mounted () {},
+  beforeCreate () {},
+  beforeMount () {},
+  beforeUpdate () {},
+  updated () {},
+  beforeDestroy () {},
+  destroyed () {},
+  activated () {
     // 如果页面有keep-alive缓存功能，这个函数会触发
-  },
-};
+  }
+}
 </script>
 <style lang=""></style>
