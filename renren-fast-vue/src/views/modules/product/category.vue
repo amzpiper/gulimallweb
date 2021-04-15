@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-tree :data="menus" :props="defaultProps" @node-click="handleNodeClick" :expand-on-click-node="false"
-      show-checkbox node-key="catId">
+      show-checkbox node-key="catId" :default-expanded-keys="expandedKey">
       <span class="custom-tree-node" slot-scope="{ node, data }">
         <span>{{ node.label }}</span>
         <span>
@@ -28,6 +28,7 @@
           children: "children",
           label: "name",
         },
+        expandedKey: []
       };
     },
     computed: {},
@@ -73,14 +74,22 @@
                 type: 'success',
                 duration: 1500,
                 onClose: () => {
-                  this.getMenus()
-                }
+                  }
               })
+              //更新删除后的分类列表
+              this.getMenus()
+              //设置默认展开的菜单
+              this.expandedKey = [node.parent.data.catId]
             } else {
               this.$message.error(data.msg)
             }
           })
-        }).catch(() => {})
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消删除'
+          }); 
+        })
       },
     },
     created() {
