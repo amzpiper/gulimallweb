@@ -8,6 +8,9 @@
       show-checkbox
       node-key="catId"
       :default-expanded-keys="expandedKey"
+      draggable
+      :allow-drop="allowDrop"
+      @node-drop="handleDrop"
     >
       <span class="custom-tree-node" slot-scope="{ node, data }">
         <span>{{ node.label }}</span>
@@ -78,11 +81,13 @@ export default {
         children: "children",
         label: "name",
       },
-      expandedKey: [],
-      title: "提示",
+      expandedKey: [],//默认展示的节点
+      maxLevel:0, //计算最大的层级
+      updateNodes:[],//修改层级时保存所有重新排序的信息
+      title: "提示",//增加修改分类提示框的标题
       dialogVisible: false,
       dialogType: "", //eidt , add
-      category: {
+      category: { //分类model
         name: "",
         parentCid: 0,
         catLevel: 0,
@@ -145,6 +150,75 @@ export default {
       });
       console.log("category", this.category);
     },
+    //计算拖拽节点修改层级
+    allowDrop(draggingNode, dropNode, type) {
+      //draggingNode：当前节点，dropNode：目标节点，type：那个位置
+      //1.判断规则-放到里面：当前节点总层数+父节点及节点总层数<=3
+      //2.放到后边：当前节点总层数+父节点及以上的层数<=3
+      console.log("allowDrop:",draggingNode, dropNode, type)
+
+      //1)被拖到的当前节点总层数
+      this.countNodeLevel(draggingNode.data);
+      console.log("正在拖到的节点深度",this.maxLevel)
+      //2)当前深度
+      let deep = (this.maxLevel - draggingNode.data.catLevel) + 1
+      console.log("深度",deep)
+      //3）当前正在拖动的节点+目标节点所在的深度不大于3即可
+      if(type == "inner"){
+        console.log("拖拽后深度",deep +dropNode.level)
+        return deep +dropNode.level <=3;
+      }else{
+        console.log("拖拽后深度",deep +dropNode.parent.level)
+        return deep +dropNode.parent.level <=3;
+      }
+    },
+    //计算当前节点总层数
+    countNodeLevel(data){
+      //找到最深的子节点层级
+      if(data.children != null && data.children.length > 0){
+        for(let i=0;i<data.children.length;i++){
+          if(data.children[i].catLevel > this.maxLevel){
+            this.maxLevel = data.children[i].catLevel
+          }
+          this.countNodeLevel(data.children[i]);
+        }
+      }
+    },
+    //拖拽成功后
+    handleDrop(draggingNode, dropNode, dropType, ev) {
+      console.log('handleDrop: ', draggingNode, dropNode, dropType, ev);
+      //1.当前节点最新父id
+      // dropNode的父节点中含有拖拽后的所有子节点数据，需要把父节点的所有子节点排个序
+      let pCid = 0;
+      let siblings = null;//保存所有兄弟节点
+      if(dropType == "before" ||dropType == "after"){
+        pCid = dropNode.parent.data.catId;
+        // 2.情况：如果不是inner，那么dropNode的所有子节点就是他的所有兄弟节点
+        siblings = dropNode.parent.childNodes;
+        console.log("非inner-兄弟节点 ",siblings)
+      }else{
+        dropNode.data.catId;
+        // 2.情况：如果是inner，那么dropNode的所有子节点就是他的所有兄弟节点
+        siblings = dropNode.childNodes;
+        console.log("inner-兄弟节点 ",siblings)
+      }
+
+      //2.当前拖拽的最新顺序,在dropNode的dropType位置-应该时拖拽后的节点的所在的父节点的子节点拿出来排个序
+      //遍历所有兄弟节点重新排序
+      for(let i=0;i<siblings.length;i++){
+        //updateNodes
+        //修改所有兄弟的sort顺序和父子关系的，需要判断一下拖拽的节点的id修改一下父节点
+        if(siblings[i].data.catId == draggingNode.data.catId){
+          //如果遍历的是当前拖拽的节点,还要修改父id          
+        }else{
+          //其他不修改父id
+          this.updateNodes.push({catId :siblings[i].data.catId,sort:i})
+        }
+      }
+
+      //3.当前拖拽节点的最新层级
+      dropNode.parent.childNodes[0].level
+    },
     //发起修改分类
     editCategory() {
       //后端中接收的字段为null时不会修改该字段
@@ -158,13 +232,13 @@ export default {
           message: "菜单修改成功",
           type: "success",
         });
+        //更新添加后的分类列表
+        this.getMenus();
+        //设置默认展开的菜单
+        this.expandedKey = [this.category.parentCid];
       });
       //关闭对话框
       this.dialogVisible = false;
-      //更新添加后的分类列表
-      this.getMenus();
-      //设置默认展开的菜单
-      this.expandedKey = [this.category.parentCid];
     },
     //添加分类
     append(data) {
