@@ -192,9 +192,9 @@ export default {
       let pCid = 0;
       let siblings = null;//保存所有兄弟节点
       if(dropType == "before" ||dropType == "after"){
-        pCid = dropNode.parent.data.catId;
+        pCid = dropNode.parent.data.catId == undefined ? 0 : dropNode.parent.childNodes;
         // 2.情况：如果不是inner，那么dropNode的所有子节点就是他的所有兄弟节点
-        siblings = dropNode.parent.childNodes;
+        siblings = dropNode.parent.childNodes; 
         console.log("非inner-兄弟节点 ",siblings)
       }else{
         dropNode.data.catId;
@@ -209,15 +209,27 @@ export default {
         //updateNodes
         //修改所有兄弟的sort顺序和父子关系的，需要判断一下拖拽的节点的id修改一下父节点
         if(siblings[i].data.catId == draggingNode.data.catId){
-          //如果遍历的是当前拖拽的节点,还要修改父id          
+          //如果遍历的是当前拖拽的节点,还要修改父id
+          //并且层级发生了变化,当前节点和拖拽的节点的层级不一样
+          let catLevel = draggingNode.data.catLevel;
+          if(siblings[i].data.catLevel != draggingNode.data.catLevel){
+            if(dropType =="before" ||dropType == "after"){
+              catLevel = draggingNode.data.catLevel;
+            }else{
+              catLevel = draggingNode.data.catLevel;
+            }
+          }
+          this.updateNodes.push({catId :siblings[i].data.catId,sort:i,parentCid:pCid,catLevel:catLevel})
         }else{
-          //其他不修改父id
+          //其他兄弟元素只改顺序，不修改父id
           this.updateNodes.push({catId :siblings[i].data.catId,sort:i})
         }
       }
 
       //3.当前拖拽节点的最新层级
-      dropNode.parent.childNodes[0].level
+      // dropNode.parent.childNodes[0].level
+
+      console.log("updateNodes",this.updateNodes)
     },
     //发起修改分类
     editCategory() {
