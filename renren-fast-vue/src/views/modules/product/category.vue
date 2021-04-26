@@ -205,19 +205,20 @@ export default {
 
       //2.当前拖拽的最新顺序,在dropNode的dropType位置-应该时拖拽后的节点的所在的父节点的子节点拿出来排个序
       //遍历所有兄弟节点重新排序
+      //siblings集合是拖拽之后的数据
       for(let i=0;i<siblings.length;i++){
         //updateNodes
         //修改所有兄弟的sort顺序和父子关系的，需要判断一下拖拽的节点的id修改一下父节点
         if(siblings[i].data.catId == draggingNode.data.catId){
           //如果遍历的是当前拖拽的节点,还要修改父id
-          //并且层级发生了变化,当前节点和拖拽的节点的层级不一样
+          //并且当前节点层级发生了变化,当前节点和拖拽的节点的层级不一样
           let catLevel = draggingNode.data.catLevel;
-          if(siblings[i].data.catLevel != draggingNode.data.catLevel){
-            if(dropType =="before" ||dropType == "after"){
-              catLevel = draggingNode.data.catLevel;
-            }else{
-              catLevel = draggingNode.data.catLevel;
-            }
+          //正在遍历的节点层级和拖拽时的不一样
+          if(siblings[i].data.catLevel != draggingNode.level){
+            //并且当前节点层级发生了变化
+            catLevel = siblings[i].level;
+            //并且当前节点的子节点层级发生了变化,修改子节点层级
+            this.updateChildNodeLevel(siblings[i]);
           }
           this.updateNodes.push({catId :siblings[i].data.catId,sort:i,parentCid:pCid,catLevel:catLevel})
         }else{
@@ -230,6 +231,16 @@ export default {
       // dropNode.parent.childNodes[0].level
 
       console.log("updateNodes",this.updateNodes)
+    },
+    //并且当前节点的子节点层级发生了变化,修改子节点层级
+    updateChildNodeLevel(node){
+      if(node.childNodes.length>0){
+        for(let i=0;i<node.childNodes.length;i++){
+          var currentNode = node.childNodes[i].data;
+          currentNode.catId;
+          
+        }
+      }
     },
     //发起修改分类
     editCategory() {
