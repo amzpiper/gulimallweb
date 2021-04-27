@@ -165,6 +165,7 @@ export default {
       console.log("深度",deep)
       //3）当前正在拖动的节点+目标节点所在的深度不大于3即可
       if(type == "inner"){
+        console.log("this.maxLevel:",this.maxLevel,";draggingNode.data.catLevel:",draggingNode.data.catLevel)
         console.log("拖拽后深度",deep +dropNode.level)
         return deep +dropNode.level <=3;
       }else{
@@ -212,9 +213,9 @@ export default {
         if(siblings[i].data.catId == draggingNode.data.catId){
           //如果遍历的是当前拖拽的节点,还要修改父id
           //并且当前节点层级发生了变化,当前节点和拖拽的节点的层级不一样
-          let catLevel = draggingNode.data.catLevel;
+          let catLevel = draggingNode.level;
           //正在遍历的节点层级和拖拽时的不一样
-          if(siblings[i].data.catLevel != draggingNode.level){
+          if(siblings[i].level != draggingNode.level){
             //并且当前节点层级发生了变化
             catLevel = siblings[i].level;
             //并且当前节点的子节点层级发生了变化,修改子节点层级
@@ -228,17 +229,30 @@ export default {
       }
 
       //3.当前拖拽节点的最新层级
-      // dropNode.parent.childNodes[0].level
-
       console.log("updateNodes",this.updateNodes)
+      this.$http({
+        url: this.$http.adornUrl("/product/category/update/sort"),
+        method: "post",
+        data: this.$http.adornData(this.updateNodes, false),
+      }).then(({ data }) => {
+        this.$message({
+          message: "菜单顺序修改成功",
+          type: "success",
+        });
+        //更新添加后的分类列表
+        this.getMenus();
+        //设置默认展开的菜单
+        this.expandedKey = [pCid];
+      });
+
     },
     //并且当前节点的子节点层级发生了变化,修改子节点层级
     updateChildNodeLevel(node){
       if(node.childNodes.length>0){
         for(let i=0;i<node.childNodes.length;i++){
           var currentNode = node.childNodes[i].data;
-          currentNode.catId;
-          
+          this.updateNodes.push({catId:currentNode.catId,catLevel:node.childNodes[i].level});
+          this.updateChildNodeLevel(node.childNodes[i]);
         }
       }
     },
