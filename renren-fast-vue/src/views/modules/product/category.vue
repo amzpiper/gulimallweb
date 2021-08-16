@@ -243,6 +243,8 @@ export default {
         this.getMenus();
         //设置默认展开的菜单
         this.expandedKey = [pCid];
+        this.updateNodes = [];
+        this.maxLevel = 0;
       });
 
     },
